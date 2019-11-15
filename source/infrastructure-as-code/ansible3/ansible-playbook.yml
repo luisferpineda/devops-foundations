@@ -1,0 +1,30 @@
+---
+  - name: Playbook
+    hosts: localhost
+    become: yes
+    become_user: root
+    tasks:
+      - name: Update all packages
+        yum:
+          name: '*'
+          state: latest
+          update_only: yes
+
+      - name: Ensure a list of yum packages are installed
+        yum:
+          name: "{{ packages }}"
+          state: latest
+          update_cache: yes
+        vars:
+          packages:
+            - python-pip
+            - yum-utils
+            - device-mapper-persistent-data
+            - lvm2
+            - docker
+
+      - name: Enable Docker CE service at startup
+        service:
+          name: docker
+          state: started
+          enabled: yes
